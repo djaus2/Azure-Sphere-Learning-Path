@@ -5,11 +5,5 @@
 #pragma once
 #include "../applibs_versions.h"
 void* GroveTempHumiBaroBME280_Open(int i2cFd);
-void GroveTempHumiBaroBME280_ReadTemperature(void* inst);
-void GroveTempHumiBaroBME280_ReadPressure(void* inst);
-void GroveTempHumiBaroBME280_ReadHumidity(void* inst);
+void GroveTempHumiBaroBME280_Read(void* inst);
 float GroveTempHumiBaroBME280_GetTemperature(void* inst);
-float GroveTempHumiBaroBME280_GetPressure(void* inst);
-float GroveTempHumiBaroBME280_GetHumidity(void* inst);
-
-

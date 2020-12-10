@@ -103,7 +103,7 @@ static LP_TIMER azureIotConnectionStatusTimer = {
 	.handler = AzureIoTConnectionStatusHandler };
 
 static LP_TIMER measureSensorTimer = {
-	.period = { 6, 0 },
+	.period = { 60, 0 },
 	.name = "measureSensorTimer",
 	.handler = MeasureSensorHandler };
 
@@ -156,35 +156,62 @@ void* bme280;
 static void MeasureSensorHandler(EventLoopTimer* eventLoopTimer)
 {
 	static int msgId = 0;
+
+#ifdef GROVE
+#ifdef BME280
+#else
 	static LP_ENVIRONMENT environment;
+#endif
+#else
+	static LP_ENVIRONMENT environment;
+#endif
+	
 
 	if (ConsumeEventLoopTimerEvent(eventLoopTimer) != 0)
 	{
 		lp_terminate(ExitCode_ConsumeEventLoopTimeEvent);
 	}
 	else {
-		#ifdef GROVE
-		#ifdef BME280
-		//GroveTempHumiBaroBME280_ReadTemperature(bme280);
-		GroveTempHumiBaroBME280_Read(bme280);
-		//GroveTempHumiBaroBME280_ReadPressure(bme280);
-		//GroveTempHumiBaroBME280_ReadHumidity(bme280);
-		float temp = GroveTempHumiBaroBME280_GetTemperature(bme280);
-		//float humid = GroveTempHumiBaroBME280_GetHumidity(bme280);
-		Log_Debug("\nTemperature: %.1fC\n", temp);
-		//Log_Debug("Humidity: %.1f\%c\n", humid, 0x25);
-		//float press = GroveTempHumiBaroBME280_GetPressure(bme280);
-		//Log_Debug("Pressure: %.1fhPa\n", press);
-		#endif
-		#endif
+#ifdef GROVE
+#ifdef BME280
+		//Grove Shield and BME280 Sensor
+		GroveTempHumiBaroBME280_ReadTemperature(bme280);
+		GroveTempHumiBaroBME280_ReadTemperature(bme280);
+		GroveTempHumiBaroBME280_ReadPressure(bme280);
+		GroveTempHumiBaroBME280_ReadHumidity(bme280);
+		float temperature = GroveTempHumiBaroBME280_GetTemperature(bme280);
+		float humidity = GroveTempHumiBaroBME280_GetHumidity(bme280);
+		//Log_Debug("\nTemperature: %.1fC\n", temperature);
+		//Log_Debug("Humidity: %.1f\%c\n", humidity, 0x25);
+		float pressure = GroveTempHumiBaroBME280_GetPressure(bme280);
+		//Log_Debug("Pressure: %.1fhPa\n", pressure);
 		
-		if (lp_readTelemetry(&environment) &&
-			snprintf(msgBuffer, JSON_MESSAGE_BYTES, msgTemplate,
-				/*environment.temperature*/temp, environment.humidity, environment.pressure, msgId++) > 0)
+		if (snprintf(msgBuffer, JSON_MESSAGE_BYTES, msgTemplate,
+				/*environment.*/temperature, /*environment.*/humidity, /*environment.*/pressure, msgId++) > 0)
 		{
 			Log_Debug("%s\n", msgBuffer);
 			lp_azureMsgSendWithProperties(msgBuffer, telemetryMessageProperties, NELEMS(telemetryMessageProperties));
 		}
+#else
+		//If Grove Shield but no Sensor
+		if (lp_readTelemetry(&environment) &&
+			snprintf(msgBuffer, JSON_MESSAGE_BYTES, msgTemplate,
+				environment.temperature, environment.humidity, environment.pressure, msgId++) > 0)
+		{
+			Log_Debug("%s\n", msgBuffer);
+			lp_azureMsgSendWithProperties(msgBuffer, telemetryMessageProperties, NELEMS(telemetryMessageProperties));
+		}
+#endif
+#else
+		//If not Grove Shield
+		if (lp_readTelemetry(&environment) &&
+			snprintf(msgBuffer, JSON_MESSAGE_BYTES, msgTemplate,
+				environment.temperature, environment.humidity, environment.pressure, msgId++) > 0)
+		{
+			Log_Debug("%s\n", msgBuffer);
+			lp_azureMsgSendWithProperties(msgBuffer, telemetryMessageProperties, NELEMS(telemetryMessageProperties));
+		}
+#endif
 	}
 }
 
@@ -199,6 +226,16 @@ static void InitPeripheralsAndHandlers(void)
 	lp_initializeDevKit();
 
 	lp_gpioSetOpen(peripheralGpioSet, NELEMS(peripheralGpioSet));
+
+#ifdef GROVE
+	int i2cFd;
+	GroveShield_Initialize(&i2cFd, 115200);
+	Log_Debug("Looks like the Grove Shield started OK\n");
+#ifdef BME280
+	bme280 = GroveTempHumiBaroBME280_Open(i2cFd);
+	Log_Debug("Looks like the Grove BME280 Sensor started OK\n");
+#endif
+#endif
 
 	lp_timerSetStart(timerSet, NELEMS(timerSet));
 }
@@ -231,15 +268,7 @@ int main(int argc, char* argv[])
 	}
 
 	InitPeripheralsAndHandlers();
-#ifdef GROVE
-	int i2cFd;
-	GroveShield_Initialize(&i2cFd, 115200);
-	Log_Debug("Looks like the Grove Shield started OK\n");
-#ifdef BME280
-	bme280 = GroveTempHumiBaroBME280_Open(i2cFd);
-	Log_Debug("Looks like the Grove BME280 Sensor started OK\n");
-#endif
-#endif
+
 
 	// Main loop
 	while (!lp_isTerminationRequired())
