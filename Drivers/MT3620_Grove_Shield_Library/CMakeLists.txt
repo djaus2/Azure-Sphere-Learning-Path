@@ -61,4 +61,4 @@ set_source_files_properties(Sensors/GroveOledDisplay96x96.c PROPERTIES COMPILE_F
 target_link_libraries (${PROJECT_NAME} applibs pthread gcc_s c)
 
 
-azsphere_target_hardware_definition(${PROJECT_NAME} TARGET_DIRECTORY "../../HardwareDefinitions/mt3620_rdb" TARGET_DEFINITION "azure_sphere_learning_path.json")
+azsphere_target_hardware_definition(${PROJECT_NAME} TARGET_DIRECTORY "../HardwareDefinitions/mt3620_rdb" TARGET_DEFINITION "azure_sphere_learning_path.json")

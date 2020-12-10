@@ -69,8 +69,11 @@ target_include_directories(${PROJECT_NAME} PUBLIC ../LearningPathLibrary )
 target_compile_options(${PROJECT_NAME} PRIVATE -Wno-unknown-pragmas)
 
 if (SEEED_STUDIO_RDB OR SEEED_STUDIO_MINI)
+    add_subdirectory("../Drivers/MT3620_Grove_Shield_Library" drivers)
+    target_link_libraries(${PROJECT_NAME} MT3620_Grove_Shield_Library)
     target_include_directories(${PROJECT_NAME} PUBLIC 
                             ../LearningPathLibrary/SEEED_STUDIO
+                            ../Drivers/MT3620_Grove_Shield_Library
                             )
 endif (SEEED_STUDIO_RDB OR SEEED_STUDIO_MINI)
 

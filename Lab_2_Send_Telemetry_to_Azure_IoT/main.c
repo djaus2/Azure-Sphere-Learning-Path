@@ -34,6 +34,9 @@
  *	   2. Uncomment the set command that matches your developer board.
  *	   3. Click File, then Save to save the CMakeLists.txt file which will auto generate the CMake Cache.
  */
+#define GROVE
+#define BME280
+
 
  // Hardware definition
 #include "hw/azure_sphere_learning_path.h"
@@ -65,6 +68,12 @@
 // Hardware specific
 #ifdef OEM_SEEED_STUDIO
 #include "board.h"
+#ifdef GROVE
+#include "../Drivers/MT3620_Grove_Shield_Library/Grove.h"
+#ifdef BME280
+#include "../Drivers/MT3620_Grove_Shield_Library/Sensors//GroveTempHumiBaroBME280.h"
+#endif
+#endif
 #endif // SEEED_STUDIO
 
 #define LP_LOGGING_ENABLED FALSE
@@ -135,6 +144,12 @@ static void AzureIoTConnectionStatusHandler(EventLoopTimer* eventLoopTimer)
 	}
 }
 
+#ifdef GROVE
+#ifdef BME280
+void* bme280;
+#endif
+#endif
+
 /// <summary>
 /// Read sensor and send to Azure IoT
 /// </summary>
@@ -148,9 +163,24 @@ static void MeasureSensorHandler(EventLoopTimer* eventLoopTimer)
 		lp_terminate(ExitCode_ConsumeEventLoopTimeEvent);
 	}
 	else {
+		#ifdef GROVE
+		#ifdef BME280
+		//GroveTempHumiBaroBME280_ReadTemperature(bme280);
+		GroveTempHumiBaroBME280_Read(bme280);
+		//GroveTempHumiBaroBME280_ReadPressure(bme280);
+		//GroveTempHumiBaroBME280_ReadHumidity(bme280);
+		float temp = GroveTempHumiBaroBME280_GetTemperature(bme280);
+		//float humid = GroveTempHumiBaroBME280_GetHumidity(bme280);
+		Log_Debug("\nTemperature: %.1fC\n", temp);
+		//Log_Debug("Humidity: %.1f\%c\n", humid, 0x25);
+		//float press = GroveTempHumiBaroBME280_GetPressure(bme280);
+		//Log_Debug("Pressure: %.1fhPa\n", press);
+		#endif
+		#endif
+		
 		if (lp_readTelemetry(&environment) &&
 			snprintf(msgBuffer, JSON_MESSAGE_BYTES, msgTemplate,
-				environment.temperature, environment.humidity, environment.pressure, msgId++) > 0)
+				/*environment.temperature*/temp, environment.humidity, environment.pressure, msgId++) > 0)
 		{
 			Log_Debug("%s\n", msgBuffer);
 			lp_azureMsgSendWithProperties(msgBuffer, telemetryMessageProperties, NELEMS(telemetryMessageProperties));
@@ -201,6 +231,15 @@ int main(int argc, char* argv[])
 	}
 
 	InitPeripheralsAndHandlers();
+#ifdef GROVE
+	int i2cFd;
+	GroveShield_Initialize(&i2cFd, 115200);
+	Log_Debug("Looks like the Grove Shield started OK\n");
+#ifdef BME280
+	bme280 = GroveTempHumiBaroBME280_Open(i2cFd);
+	Log_Debug("Looks like the Grove BME280 Sensor started OK\n");
+#endif
+#endif
 
 	// Main loop
 	while (!lp_isTerminationRequired())

@@ -30,5 +30,7 @@
         {"Name": "LED_RED", "Type": "Gpio", "Mapping": "SEEED_MT3620_MDB_J1_PIN1_GPIO4", "Comment": "MT3620 RDB: LED RED"},
         {"Name": "LED_GREEN", "Type": "Gpio", "Mapping": "SEEED_MT3620_MDB_J1_PIN2_GPIO5", "Comment": "MT3620 RDB: LED GREEN"},
         {"Name": "LED_BLUE", "Type": "Gpio", "Mapping": "SEEED_MT3620_MDB_J1_PIN3_GPIO6", "Comment": "MT3620 RDB: LED BLUE"}
+	{"Name": "ISU0", "Type": "Uart", "Mapping": "MT3620_RDB_HEADER2_ISU0_UART", "Comment": "ISU0 UART is exposed on header 2, pin 1 (RX), pin 3 (TX), pin 5 (CTS), pin 7 (RTS)"},
+
     ]
 }
