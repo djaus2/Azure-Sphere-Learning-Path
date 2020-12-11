@@ -184,6 +184,10 @@ static void InitPeripheralsAndHandlers(void)
 	if (res)
 		Log_Debug("Looks like the Grove BME280 Sensor started OK\n");
 #endif
+#ifdef SHT31
+	if (res)
+		Log_Debug("Looks like the Grove SHT31 Sensor started OK\n");
+#endif
 #endif
 
 

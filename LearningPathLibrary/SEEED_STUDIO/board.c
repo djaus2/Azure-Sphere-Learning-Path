@@ -7,6 +7,10 @@
 #include "../Drivers/MT3620_Grove_Shield_Library/Sensors/GroveTempHumiBaroBME280.h"
 static void* bme280;
 #endif
+#ifdef SHT31
+#include "../Drivers/MT3620_Grove_Shield_Library/Sensors/GroveTempHumiSHT31.h"
+static void* sht31;
+#endif 
 #endif
 
 
@@ -36,11 +40,11 @@ bool lp_readTelemetry(LP_ENVIRONMENT* environment)
 	//Log_Debug("\nTemperature: %.1fC\n", environment->temperature);
 	//Log_Debug("Humidity: %.1f\%c\n", environment->humidity); // , 0x25);
 	//Log_Debug("Pressure: %.1fhPa\n", environment->pressure);
-#else
-	rnd = (rand() % 10) - 5;
-	environment->temperature = (float)(25.0 + rnd);
-	environment->humidity = (float)(50.0 + rnd);
-
+#endif
+#ifdef SHT31
+	GroveTempHumiSHT31_Read(sht31);
+	environment->temperature = GroveTempHumiSHT31_GetTemperature(sht31);
+	environment->humidity = GroveTempHumiSHT31_GetHumidity(sht31);
 	rnd = (rand() % 50) - 25;
 	environment->pressure = (float)(1000.0 + rnd);
 #endif
@@ -72,6 +76,10 @@ bool lp_initializeSensor(void) {
 #ifdef BME280
 	bme280 = GroveTempHumiBaroBME280_Open(i2cFd);
 	//Log_Debug("Looks like the Grove BME280 Sensor started OK\n");
+#endif
+#ifdef SHT31
+	sht31 = GroveTempHumiSHT31_Open(i2cFd);
+	//Log_Debug("Looks like the Grove SHT31 Sensor started OK\n");
 #endif
 #endif
 	return true;

@@ -16,8 +16,10 @@ set(SEEED_STUDIO_RDB TRUE "Seeed Studio Azure Sphere MT3620 Development Kit (aka
 
 # define GROVE
 # define BME280
+# define SHT31
 set (GROVE_SHIELD TRUE "Grove Shield")
 set (GROVE_BME280 TRUE "Grove GROVE_BME280 Sensor")
+#set (GROVE_SHT31 TRUE "Grove GROVE_SHT31 Sensor")
 ###################################################################################################################
 
 cmake_minimum_required (VERSION 3.10)
@@ -59,7 +61,7 @@ if(SEEED_STUDIO_RDB OR SEEED_STUDIO_MINI)
 
 endif(SEEED_STUDIO_RDB OR SEEED_STUDIO_MINI)
 
-
+# Can Change BME280 for SHT31  ... Builds but not tested
 
 
 
