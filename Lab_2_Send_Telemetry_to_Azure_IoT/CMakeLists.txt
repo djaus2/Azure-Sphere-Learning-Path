@@ -14,6 +14,10 @@
 set(SEEED_STUDIO_RDB TRUE "Seeed Studio Azure Sphere MT3620 Development Kit (aka Reference Design Board or rdb)")
 # set(SEEED_STUDIO_MINI TRUE "Seeed Studio Azure Sphere MT3620 Mini Dev Board")
 
+# define GROVE
+# define BME280
+set (GROVE_SHIELD TRUE "Grove Shield")
+set (GROVE_BME280 TRUE "Grove GROVE_BME280 Sensor")
 ###################################################################################################################
 
 cmake_minimum_required (VERSION 3.10)
@@ -50,8 +54,15 @@ if(SEEED_STUDIO_RDB OR SEEED_STUDIO_MINI)
     source_group("Oem" FILES ${Oem})
 
     add_definitions( -DOEM_SEEED_STUDIO=TRUE )
+    add_definitions( -DGROVE=TRUE )
+    add_definitions( -DBME280=TRUE )
 
 endif(SEEED_STUDIO_RDB OR SEEED_STUDIO_MINI)
+
+
+
+
+
 
 set(ALL_FILES
     ${Source}

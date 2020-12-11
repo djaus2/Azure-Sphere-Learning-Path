@@ -16,4 +16,5 @@ typedef struct
 
 bool lp_readTelemetry(LP_ENVIRONMENT* environment);
 bool lp_initializeDevKit(void);
+bool lp_initializeSensor(void);
 bool lp_closeDevKit(void);

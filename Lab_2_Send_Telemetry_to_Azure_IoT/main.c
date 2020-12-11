@@ -34,8 +34,7 @@
  *	   2. Uncomment the set command that matches your developer board.
  *	   3. Click File, then Save to save the CMakeLists.txt file which will auto generate the CMake Cache.
  */
-#define GROVE
-#define BME280
+
 
 
  // Hardware definition
@@ -68,12 +67,6 @@
 // Hardware specific
 #ifdef OEM_SEEED_STUDIO
 #include "board.h"
-#ifdef GROVE
-#include "../Drivers/MT3620_Grove_Shield_Library/Grove.h"
-#ifdef BME280
-#include "../Drivers/MT3620_Grove_Shield_Library/Sensors//GroveTempHumiBaroBME280.h"
-#endif
-#endif
 #endif // SEEED_STUDIO
 
 #define LP_LOGGING_ENABLED FALSE
@@ -103,7 +96,7 @@ static LP_TIMER azureIotConnectionStatusTimer = {
 	.handler = AzureIoTConnectionStatusHandler };
 
 static LP_TIMER measureSensorTimer = {
-	.period = { 60, 0 },
+	.period = { 6, 0 },
 	.name = "measureSensorTimer",
 	.handler = MeasureSensorHandler };
 
@@ -144,11 +137,7 @@ static void AzureIoTConnectionStatusHandler(EventLoopTimer* eventLoopTimer)
 	}
 }
 
-#ifdef GROVE
-#ifdef BME280
-void* bme280;
-#endif
-#endif
+
 
 /// <summary>
 /// Read sensor and send to Azure IoT
@@ -156,44 +145,14 @@ void* bme280;
 static void MeasureSensorHandler(EventLoopTimer* eventLoopTimer)
 {
 	static int msgId = 0;
+	static LP_ENVIRONMENT environment;
 
-#ifdef GROVE
-#ifdef BME280
-#else
-	static LP_ENVIRONMENT environment;
-#endif
-#else
-	static LP_ENVIRONMENT environment;
-#endif
 	
-
 	if (ConsumeEventLoopTimerEvent(eventLoopTimer) != 0)
 	{
 		lp_terminate(ExitCode_ConsumeEventLoopTimeEvent);
 	}
 	else {
-#ifdef GROVE
-#ifdef BME280
-		//Grove Shield and BME280 Sensor
-		GroveTempHumiBaroBME280_ReadTemperature(bme280);
-		GroveTempHumiBaroBME280_ReadTemperature(bme280);
-		GroveTempHumiBaroBME280_ReadPressure(bme280);
-		GroveTempHumiBaroBME280_ReadHumidity(bme280);
-		float temperature = GroveTempHumiBaroBME280_GetTemperature(bme280);
-		float humidity = GroveTempHumiBaroBME280_GetHumidity(bme280);
-		//Log_Debug("\nTemperature: %.1fC\n", temperature);
-		//Log_Debug("Humidity: %.1f\%c\n", humidity, 0x25);
-		float pressure = GroveTempHumiBaroBME280_GetPressure(bme280);
-		//Log_Debug("Pressure: %.1fhPa\n", pressure);
-		
-		if (snprintf(msgBuffer, JSON_MESSAGE_BYTES, msgTemplate,
-				/*environment.*/temperature, /*environment.*/humidity, /*environment.*/pressure, msgId++) > 0)
-		{
-			Log_Debug("%s\n", msgBuffer);
-			lp_azureMsgSendWithProperties(msgBuffer, telemetryMessageProperties, NELEMS(telemetryMessageProperties));
-		}
-#else
-		//If Grove Shield but no Sensor
 		if (lp_readTelemetry(&environment) &&
 			snprintf(msgBuffer, JSON_MESSAGE_BYTES, msgTemplate,
 				environment.temperature, environment.humidity, environment.pressure, msgId++) > 0)
@@ -201,17 +160,6 @@ static void MeasureSensorHandler(EventLoopTimer* eventLoopTimer)
 			Log_Debug("%s\n", msgBuffer);
 			lp_azureMsgSendWithProperties(msgBuffer, telemetryMessageProperties, NELEMS(telemetryMessageProperties));
 		}
-#endif
-#else
-		//If not Grove Shield
-		if (lp_readTelemetry(&environment) &&
-			snprintf(msgBuffer, JSON_MESSAGE_BYTES, msgTemplate,
-				environment.temperature, environment.humidity, environment.pressure, msgId++) > 0)
-		{
-			Log_Debug("%s\n", msgBuffer);
-			lp_azureMsgSendWithProperties(msgBuffer, telemetryMessageProperties, NELEMS(telemetryMessageProperties));
-		}
-#endif
 	}
 }
 
@@ -223,19 +171,21 @@ static void InitPeripheralsAndHandlers(void)
 {
 	lp_azureInitialize(lp_config.scopeId, IOT_PLUG_AND_PLAY_MODEL_ID);
 
-	lp_initializeDevKit();
+	bool res = lp_initializeDevKit();
 
 	lp_gpioSetOpen(peripheralGpioSet, NELEMS(peripheralGpioSet));
 
+	// Follwing needs peripherals:
+	res = lp_initializeSensor();
 #ifdef GROVE
-	int i2cFd;
-	GroveShield_Initialize(&i2cFd, 115200);
-	Log_Debug("Looks like the Grove Shield started OK\n");
+	if(res)
+		Log_Debug("Looks like the Grove Shield started OK\n");
 #ifdef BME280
-	bme280 = GroveTempHumiBaroBME280_Open(i2cFd);
-	Log_Debug("Looks like the Grove BME280 Sensor started OK\n");
+	if (res)
+		Log_Debug("Looks like the Grove BME280 Sensor started OK\n");
 #endif
 #endif
+
 
 	lp_timerSetStart(timerSet, NELEMS(timerSet));
 }
