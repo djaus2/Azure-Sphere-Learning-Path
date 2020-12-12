@@ -188,6 +188,14 @@ static void InitPeripheralsAndHandlers(void)
 	if (res)
 		Log_Debug("Looks like the Grove SHT31 Sensor started OK\n");
 #endif
+#ifdef LIGHTV1_2
+	if (res)
+		Log_Debug("Looks like the Grove Light V1.2 Sensor started OK\n");
+#endif
+#ifdef OLED
+	if (res)
+		Log_Debug("Looks like the Grove OLED Display started OK\n");
+#endif
 #endif
 
 

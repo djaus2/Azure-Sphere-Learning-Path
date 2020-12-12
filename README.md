@@ -3,8 +3,20 @@
 
 ---
 
-**Follow** me on **Twitter** [@dglover](https://twitter.com/dglover)
+## About  this fork of the repository:
 
+|Contributor| [David Jones](https://davidjones.sportronics.com.au), Microsoft App Dev and IoT MVP|
+|:----|:---|
+|| **Follow** David Jones on **Twitter** [@iotmaestro](https://twitter.com/iotmaestro)
+|Target Platform| Extended for SEEED MT2620 with SEEED Shield|
+|Implements|Grove BME280 Sensor, Grove SHT31 Sensor (Not yet tested), Grove Light Sensor V1.2(Not yet tested) and Grove OLED 1.12 Display|
+|Environment Values| For Azure IoT App, the app uses real values from BME280 or SHT31 rather than simulated ones. OLED if used displays those values|
+
+---
+
+---
+
+**Follow** Dave Glover on **Twitter** [@dglover](https://twitter.com/dglover)
 |Author|[Dave Glover](https://developer.microsoft.com/advocates/dave-glover?WT.mc_id=iot-0000-dglover), Microsoft Cloud Developer Advocate |
 |:----|:---|
 |Target Platform | Azure Sphere MT3620 |

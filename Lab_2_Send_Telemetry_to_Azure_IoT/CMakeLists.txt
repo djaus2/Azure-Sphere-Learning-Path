@@ -58,6 +58,7 @@ if(SEEED_STUDIO_RDB OR SEEED_STUDIO_MINI)
     add_definitions( -DOEM_SEEED_STUDIO=TRUE )
     add_definitions( -DGROVE=TRUE )
     add_definitions( -DBME280=TRUE )
+    add_definitions( -DOLED=TRUE )
 
 endif(SEEED_STUDIO_RDB OR SEEED_STUDIO_MINI)
 
