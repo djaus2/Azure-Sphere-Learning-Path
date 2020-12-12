@@ -4,9 +4,9 @@
 ---
 
 ## About  this fork of the repository:
-
-|Contributor| [David Jones](https://davidjones.sportronics.com.au), Microsoft App Dev and IoT MVP|
+| Forked from:| [gloveboxes/Azure-Sphere-Learning-Path](https://github.com/gloveboxes/Azure-Sphere-Learning-Path) on GitHub |
 |:----|:---|
+|Contributor| [David Jones](https://davidjones.sportronics.com.au), Microsoft App Dev and IoT MVP|
 || **Follow** David Jones on **Twitter** [@iotmaestro](https://twitter.com/iotmaestro)
 |Target Platform| Extended for SEEED MT2620 with SEEED Shield|
 |Implements|Grove BME280 Sensor, Grove SHT31 Sensor (Not yet tested), Grove Light Sensor V1.2(Not yet tested) and Grove OLED 1.12 Display|
