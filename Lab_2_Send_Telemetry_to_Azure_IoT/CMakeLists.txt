@@ -63,7 +63,7 @@ if(SEEED_STUDIO_RDB OR SEEED_STUDIO_MINI)
 endif(SEEED_STUDIO_RDB OR SEEED_STUDIO_MINI)
 
 # Can Change BME280 for SHT31  ... Builds but not tested
-# Also LIGHT for Grove Light Sensor V1.2
+# Also LIGHTV_2 for Grove Light Sensor V1.2
 
 
 
