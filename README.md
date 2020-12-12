@@ -11,6 +11,7 @@
 |Target Platform| Extended for SEEED MT2620 with SEEED Shield|
 |Implements|Grove BME280 Sensor, Grove SHT31 Sensor (Not yet tested), Grove Light Sensor V1.2(Not yet tested) and Grove OLED 1.12 Display|
 |Environment Values| For Azure IoT App, the app uses real values from BME280 or SHT31 rather than simulated ones. OLED if used displays those values|
+|Light Sensor| Actual values submitted rather than 0 ... but not passed to Azure yet...|
 
 ---
 
