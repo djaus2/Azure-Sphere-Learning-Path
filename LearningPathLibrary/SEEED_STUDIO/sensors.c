@@ -70,7 +70,7 @@ bool ReadGroveSensors(LP_ENVIRONMENT* environment)
 	uint8_t grayLevel = 15;
 	uint8_t startLine = (uint8_t)3;
 	uint8_t cursor = startLine;
-	uint8_t space = (uint8_t)3;
+	uint8_t space = (uint8_t)2;
 	uint8_t headingLeft = (uint8_t)0;
 	uint8_t valueLeft = (uint8_t)5;
 	setTextXY(cursor, headingLeft);  //set Cursor to ith line, 0th column
@@ -103,6 +103,14 @@ bool ReadGroveSensors(LP_ENVIRONMENT* environment)
 	setTextXY(cursor, valueLeft);
 	sprintf(str, "%f", environment->pressure);
 	putString(str);
+	cursor = (uint8_t)(cursor + space);
+
+	setTextXY(cursor++, headingLeft);
+	putString("Light:");
+	setTextXY(cursor, valueLeft);
+	sprintf(str, "%d", environment->light);
+	putString(str);
+
 #endif
 #endif
 	return true;

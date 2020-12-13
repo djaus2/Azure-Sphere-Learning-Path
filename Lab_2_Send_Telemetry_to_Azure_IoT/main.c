@@ -200,6 +200,7 @@ static void InitPeripheralsAndHandlers(void)
 
 
 	lp_timerSetStart(timerSet, NELEMS(timerSet));
+	Log_Debug("Making a reading every %d seconds\n", measureSensorTimer.period);
 }
 
 /// <summary>
