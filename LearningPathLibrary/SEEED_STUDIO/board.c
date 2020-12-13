@@ -14,8 +14,7 @@ bool lp_readTelemetry(LP_ENVIRONMENT* environment)
 #ifdef GROVE
 	result = ReadGroveSensors(environment);
 #else
-	int rnd = 0;
-	rnd = (rand() % 10) - 5;
+	int rnd = (rand() % 10) - 5;
 	environment->temperature = (float)(25.0 + rnd);
 	environment->humidity = (float)(50.0 + rnd);
 
