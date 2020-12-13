@@ -96,7 +96,7 @@ static LP_TIMER azureIotConnectionStatusTimer = {
 	.handler = AzureIoTConnectionStatusHandler };
 
 static LP_TIMER measureSensorTimer = {
-	.period = { 6, 0 },
+	.period = { 60, 0 }, //Once per minute
 	.name = "measureSensorTimer",
 	.handler = MeasureSensorHandler };
 
@@ -176,7 +176,7 @@ static void InitPeripheralsAndHandlers(void)
 	lp_gpioSetOpen(peripheralGpioSet, NELEMS(peripheralGpioSet));
 
 	// Follwing needs peripherals:
-	res = lp_initializeSensor();
+	res = lp_initializeSensors();
 #ifdef GROVE
 	if(res)
 		Log_Debug("Looks like the Grove Shield started OK\n");

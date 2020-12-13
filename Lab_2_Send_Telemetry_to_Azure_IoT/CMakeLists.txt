@@ -52,6 +52,7 @@ if(SEEED_STUDIO_RDB OR SEEED_STUDIO_MINI)
 
     set(Oem
         "../LearningPathLibrary/SEEED_STUDIO/board.c"
+         "../LearningPathLibrary/SEEED_STUDIO/sensors.c"
     )
     source_group("Oem" FILES ${Oem})
 
